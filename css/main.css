@@ -42,7 +42,7 @@ input {
   border: none;
   background-color: transparent;
   height: 70%;
-  width: 100%;
+  width: calc(100% - 18px);
   margin-left: 10px;
   box-sizing: border-box;
 }
