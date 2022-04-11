@@ -1,110 +1,95 @@
-let calculator = document.getElementById('calculator');
-let screen = document.getElementById('screen');
-let writer = document.getElementById('writer');
-let inputsContainer = document.getElementById('inputs');
+let calculator = document.getElementById("calculator");
+let screen = document.getElementById("screen");
+let writer = document.getElementById("writer");
+let inputsContainer = document.getElementById("inputs");
 
-let expression = [0];
-let exprStr = '';
-let operatorCount = 0;
-let expectingOperator = 1;
+let arithmeticOperators = ["/", "*", "+", "-"];
+let equalOperator = '=';
+let exprStr = "";
+let flag = 0;
 
 function clearScreen() {
-  exprStr = '';
-  writer.value = '';
+  exprStr = "";
+  writer.value = "";
 }
 
 function backSpace() {
-
+  exprStr = exprStr.slice(0, -1);
+  console.log(exprStr);
+  writer.value = exprStr;
 }
 
 function print(content, mode) {
+  if (flag == 1) {
+    writer.value = "";
+    flag = 0;
+  }
+  
+  for(let i=0; i<content.length; i++) {
+    if(content.charAt(i) === '*') {
+      content = content.substring(0,i) + '×' + content.substring(i+1);
+    } else if (content.charAt(i) === '/') {
+      content = content.substring(0,i) + '÷' + content.substring(i+1);
+    }
+  }
+  console.log(content);
   writer.value += content;
 }
 
 function santize(input) {
-  operators = ['/', '*', '+', '-', '%']
-  if(exprStr.length === 0 && isNaN(input)) {
-    return '';
+  if (exprStr.length === 0 && isNaN(input)) {
+    return "";
   }
+
   switch (input) {
-    case 'C':
-      return 'clear';
-    case 'ᐊ':
-      return 'del';
-    case '÷':
-      return '/';
-    case '×':
-      return '*';
+    case "C":
+      return "clear";
+    case "ᐊ":
+      return "del";
+    case "÷":
+      return "/";
+    case "×":
+      return "*";
     default:
       return input;
   }
 }
 
-function checkValidStack() {
-  // must contain 1 operator
-  // and 2 operand
-  
-}
-
-function evaluatePercent() {
-  let a = expression.pop();
-  a = a/100;
-  expression.push(a+'');
-  console.log(expression);
-}
-
-function evaluate() {
-  val = expression.pop();
-  if(val === '*') {
-
-  }
-  
-  // if(checkValidStack()) {
-    let b = expression.pop();
-    let operand = expression.pop();
-    let a = expression.pop();
-    let ans;
-    switch(operand) {
-      case '/': 
-        ans = parseInt(a) / parseInt(b);
-        break;
-      case '*':
-        ans = parseInt(a) * parseInt(b);
-        break;
-      case '-':
-        ans = parseInt(a) - parseInt(b);
-        break;
-      case '+':
-        ans = parseInt(a) + parseInt(b);
-        break;
-    }
-    return ans;
-  // }
-}
-
 function processInput(input) {
-  if(input === 'clear') clearScreen();
-  else if(input === 'del') backSpace();
-  else {
-    operators = ['/', '*', '+', '-', '%']
-    if(operators.includes(input)) {
-      if(!expectingOperator){
-        input = '';
-      } else {
-        operatorCount = 1;
-        expectingOperator = 0;
-      } 
-    } else {
-      expectingOperator = 1;
-    }
-    exprStr += input;
-    
-    print(input, 0);
-    // evaluate();
-    expression.push(input);
+  if (input === "clear") clearScreen();
+  else if (input === "del") backSpace();
+  else if(input === '%') {
+    backSpace();
+    console.log('Coming soon...');
   }
-  console.log(expression);
-  console.log(exprStr);
+  else {
+    exprStr += input;
+
+    let secondLastChar = exprStr.charAt(exprStr.length - 2);
+    let lastChar = exprStr.charAt(exprStr.length - 1);
+    if (
+      arithmeticOperators.includes(secondLastChar) &&
+      arithmeticOperators.includes(lastChar)
+    ) {
+      exprStr = exprStr.substring(0, exprStr.length-2) + lastChar;
+    }
+
+    lastChar = exprStr.charAt(exprStr.length - 1)
+    if (arithmeticOperators.includes(lastChar) || lastChar === equalOperator) {
+      try {
+        let val = eval(exprStr.slice(0, -1));
+        console.log('eval: ' +val);
+        exprStr = val + (lastChar === equalOperator ? '' : lastChar);
+        flag = 1;
+        input = exprStr;
+      } catch (error) {
+        console.log('error');
+      }
+    }
+    
+    console.log(exprStr);
+    print(input, 0);
+  }
 }
 
 function getInput() {
@@ -112,7 +97,7 @@ function getInput() {
   processInput(input);
 }
 
-let inputs = inputsContainer.querySelectorAll('td').forEach((input) => {
-  input.addEventListener('click', getInput);
+let inputs = inputsContainer.querySelectorAll("td").forEach((input) => {
+  input.addEventListener("click", getInput);
   // console.log(input);
 });
