@@ -69,7 +69,7 @@ function processInput(input) {
     let lastChar = exprStr.charAt(exprStr.length - 1);
     if (
       arithmeticOperators.includes(secondLastChar) &&
-      arithmeticOperators.includes(lastChar)
+      (arithmeticOperators.includes(lastChar) || lastChar === equalOperator)
     ) {
       exprStr = exprStr.substring(0, exprStr.length-2) + lastChar;
     }
