@@ -93,7 +93,7 @@ function processInput(input) {
 }
 
 function getInput() {
-  navigator.vibrate([100]);
+  navigator.vibrate([40,10]);
   let input = santize(this.textContent);
   processInput(input);
 }
