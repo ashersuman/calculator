@@ -93,12 +93,21 @@ function processInput(input) {
 }
 
 function getInput() {
-  navigator.vibrate([40,10]);
   let input = santize(this.textContent);
   processInput(input);
 }
 
+function clickFeedbackDown() {
+  navigator.vibrate(40);
+}
+
+function clickFeedbackUp() {
+  navigator.vibrate([50]);
+}
+
 let inputs = inputsContainer.querySelectorAll("td").forEach((input) => {
   input.addEventListener("click", getInput);
+  input.addEventListener("touchstart", clickFeedbackDown);
+  input.addEventListener("touchend", clickFeedbackUp);
   // console.log(input);
 });
